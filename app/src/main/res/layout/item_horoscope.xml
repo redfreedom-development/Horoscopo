@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/symbolImageView"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:src="@drawable/aries_icon"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:orientation="vertical"
+        android:paddingVertical="8dp"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:id="@+id/nameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre"
+            android:textSize="36dp"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/datesTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Fechas"
+            android:textSize="24dp"/>
+
+
+    </LinearLayout>
+
+</LinearLayout>
