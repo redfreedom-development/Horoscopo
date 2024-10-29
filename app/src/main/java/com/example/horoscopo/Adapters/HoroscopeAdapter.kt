@@ -16,7 +16,7 @@ class HoroscopeAdapter(val items: List<Horoscope>) : RecyclerView.Adapter<Horosc
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_horoscope, parent, false)
         return HoroscopeViewHolder(view)
     }
-
+    //tamaño de la lista que he pasado con nombre items
     override fun getItemCount(): Int = items.size
 
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
