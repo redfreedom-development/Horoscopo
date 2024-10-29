@@ -10,6 +10,7 @@ import com.example.horoscopo.R
 import com.example.horoscopo.data.Horoscope
 import com.example.horoscopo.data.HoroscopeProvider
 import androidx.recyclerview.widget.RecyclerView
+import com.example.horoscopo.adapters.HoroscopeAdapter
 
 
 class ListActivity : AppCompatActivity() {
