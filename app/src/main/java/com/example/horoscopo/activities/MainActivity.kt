@@ -12,12 +12,16 @@ import com.example.horoscopo.data.Horoscope
 import com.example.horoscopo.data.HoroscopeProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.example.horoscopo.adapters.HoroscopeAdapter
+import android.view.Menu
+import androidx.appcompat.widget.SearchView
 
 
-class ListActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     lateinit var horoscopeList: List<Horoscope>
     lateinit var recyclerView: RecyclerView
+
+
 
 
 
@@ -25,6 +29,10 @@ class ListActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_list)
+
+
+        // Configurar la Action Bar
+        supportActionBar?.title = ""
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
@@ -53,4 +61,32 @@ class ListActivity : AppCompatActivity() {
         intent.putExtra("horoscope_id", horoscope.id)
         startActivity(intent)
     }
+
+    //MENU
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_activity, menu) // Inflar el menú
+
+        val searchItem = menu?.findItem(R.id.action_search)
+        val searchView = searchItem?.actionView as SearchView // Obtener el SearchView
+
+        // Configurar el SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                // Manejar la búsqueda al enviar la consulta
+                return false
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                // Manejar los cambios en el texto de búsqueda
+
+
+                return true
+            }
+        })
+
+        return true
+    }
+
+
 }
