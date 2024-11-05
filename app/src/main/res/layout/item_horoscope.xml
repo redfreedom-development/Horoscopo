@@ -1,14 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp">
 
-    <ImageView
-        android:id="@+id/symbolImageView"
-        android:layout_width="96dp"
-        android:layout_height="96dp"/>
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/symbolImageView"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/aries_icon"/>
+
+        <ImageView
+            android:id="@+id/favoriteImageView"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_favorite_selected"
+            app:tint="@color/favorite"
+            android:scaleType="centerCrop"
+            android:layout_gravity="bottom|end"/>
+
+
+
+
+    </FrameLayout>
 
 
     <LinearLayout
@@ -20,18 +40,18 @@
 
         <TextView
             android:id="@+id/nameTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Nombre"
             android:textSize="36dp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/datesTextView"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fechas"
-            android:textSize="20dp"/>
+            android:textSize="20dp" />
+
+
 
 
     </LinearLayout>

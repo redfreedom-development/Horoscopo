@@ -8,9 +8,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.horoscopo.R
 import com.example.horoscopo.data.Horoscope
+import com.example.horoscopo.utils.SessionManager
 
 
-class HoroscopeAdapter(private val items: List<Horoscope>, val onItemClick: (Int) -> Unit): RecyclerView.Adapter<HoroscopeViewHolder>() {
+class HoroscopeAdapter(private var items: List<Horoscope>, val onItemClick: (Int) -> Unit): RecyclerView.Adapter<HoroscopeViewHolder>() {
+
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoroscopeViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_horoscope, parent, false)
@@ -19,6 +22,9 @@ class HoroscopeAdapter(private val items: List<Horoscope>, val onItemClick: (Int
     //tamaño de la lista que he pasado con nombre items
     override fun getItemCount(): Int = items.size
 
+
+
+
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
         val horoscope = items[position]
         holder.render(horoscope)
@@ -26,21 +32,50 @@ class HoroscopeAdapter(private val items: List<Horoscope>, val onItemClick: (Int
             onItemClick(position)
         }
     }
+
+
+
+
+
+
+
+
+
 }
 
 class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
-    var nameTextView: TextView = view.findViewById(R.id.nameTextView)
-    var datesTextView: TextView = view.findViewById(R.id.datesTextView)
-    var symbolImageView: ImageView = view.findViewById(R.id.symbolImageView)
+
+
+    private var nameTextView: TextView = view.findViewById(R.id.nameTextView)
+    private var datesTextView: TextView = view.findViewById(R.id.datesTextView)
+    private var symbolImageView: ImageView = view.findViewById(R.id.symbolImageView)
+    private var  favoriteImageView: ImageView
+
+    init {
+
+        nameTextView = view.findViewById(R.id.nameTextView)
+        datesTextView = view.findViewById(R.id.datesTextView)
+        symbolImageView = view.findViewById(R.id.symbolImageView)
+        favoriteImageView = view.findViewById(R.id.favoriteImageView)
+
+    }
+
 
     fun render(horoscope: Horoscope) {
-        //val context = itemView.context
-        //nameTextView.text = context.getString(horoscope.name)
-        //symbolImageView.setImageDrawable(context.getDrawable(horoscope.image))
+
 
         nameTextView.setText(horoscope.name)
         datesTextView.setText(horoscope.dates)
         symbolImageView.setImageResource(horoscope.image)
+
+        val context = itemView.context
+        val isFavorite = SessionManager(context).isFavorite(horoscope.id)
+        if (isFavorite) {
+            favoriteImageView.visibility = View.VISIBLE
+        } else {
+            favoriteImageView.visibility = View.GONE
+        }
+
     }
 }

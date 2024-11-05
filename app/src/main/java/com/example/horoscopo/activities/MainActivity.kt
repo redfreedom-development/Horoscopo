@@ -1,5 +1,6 @@
 package com.example.horoscopo.activities
 
+
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
@@ -18,8 +19,9 @@ import androidx.appcompat.widget.SearchView
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var horoscopeList: List<Horoscope>
-    lateinit var recyclerView: RecyclerView
+    private lateinit var horoscopeList: List<Horoscope>
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var adapter: HoroscopeAdapter
 
 
 
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
 
         horoscopeList = HoroscopeProvider.findAll()
 
-        val adapter = HoroscopeAdapter(horoscopeList) { position ->
+        adapter = HoroscopeAdapter(horoscopeList) { position ->
             val horoscope = horoscopeList[position]
             navigateToDetail(horoscope)
         }
@@ -54,6 +56,15 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    }
+
+
+
+
+    override fun onResume() {
+        super.onResume()
+
+        adapter.notifyDataSetChanged()
     }
 
     private fun navigateToDetail(horoscope: Horoscope) {
