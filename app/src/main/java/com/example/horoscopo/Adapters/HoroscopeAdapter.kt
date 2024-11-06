@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.horoscopo.R
 import com.example.horoscopo.data.Horoscope
 import com.example.horoscopo.utils.SessionManager
+import com.example.horoscopo.utils.highlight
 
 
 class HoroscopeAdapter(private var items: List<Horoscope>, val onItemClick: (Int) -> Unit): RecyclerView.Adapter<HoroscopeViewHolder>() {
@@ -28,9 +29,22 @@ class HoroscopeAdapter(private var items: List<Horoscope>, val onItemClick: (Int
     override fun onBindViewHolder(holder: HoroscopeViewHolder, position: Int) {
         val horoscope = items[position]
         holder.render(horoscope)
+        if (highlightText != null) {
+            holder.highlight(highlightText!!)
+        }
         holder.itemView.setOnClickListener {
             onItemClick(position)
         }
+    }
+    // Este método sirve para actualizar los datos
+    fun updateData (newDataSet: List<Horoscope>) {
+        updateData(newDataSet, null)
+    }
+
+    fun updateData(newDataSet: List<Horoscope>, highlight: String?) {
+        this.highlightText = highlight
+        items = newDataSet
+        notifyDataSetChanged()
     }
 
 
@@ -44,6 +58,7 @@ class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var datesTextView: TextView = view.findViewById(R.id.datesTextView)
     private var symbolImageView: ImageView = view.findViewById(R.id.symbolImageView)
     private var  favoriteImageView: ImageView
+    private var highlightText: String? = null
 
     init {
 
@@ -72,16 +87,7 @@ class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     }
 
-    // Este método sirve para actualizar los datos
-    fun updateData (newDataSet: List<Horoscope>) {
-        updateData(newDataSet, null)
-    }
 
-    fun updateData(newDataSet: List<Horoscope>, highlight: String?) {
-        this.highlightText = highlight
-        dataSet = newDataSet
-        notifyDataSetChanged()
-    }
 
     // Subraya el texto que coincide con la busqueda
     fun highlight(text: String) {
@@ -90,8 +96,8 @@ class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             nameTextView.text = highlighted
         } catch (e: Exception) { }
         try {
-            val highlighted = descTextView.text.toString().highlight(text)
-            descTextView.text = highlighted
+            val highlighted = datesTextView.text.toString().highlight(text)
+            datesTextView.text = highlighted
         } catch (e: Exception) { }
     }
 }

@@ -3,8 +3,10 @@ package com.example.horoscopo.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -13,6 +15,15 @@ import com.example.horoscopo.R
 import com.example.horoscopo.data.Horoscope
 import com.example.horoscopo.data.HoroscopeProvider
 import com.example.horoscopo.utils.SessionManager
+import com.google.android.material.navigation.NavigationBarView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import org.json.JSONObject
+import java.io.BufferedReader
+import java.io.InputStreamReader
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 class DetailActivity : AppCompatActivity() {
 
@@ -20,11 +31,14 @@ class DetailActivity : AppCompatActivity() {
     private lateinit var favoriteMenuItem: MenuItem
     private lateinit var session: SessionManager
     private var isFavorite = false
+    private lateinit var navigatonBarDetalles: NavigationBarView
+    private lateinit var dailyHoroscopeTextView: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_detail)
+        dailyHoroscopeTextView=findViewById(R.id.dailyHoroscopeTextView)
 
         val id = intent.getStringExtra("horoscope_id")!!
 
@@ -54,13 +68,31 @@ class DetailActivity : AppCompatActivity() {
         session = SessionManager(this)
         isFavorite = session.isFavorite(horoscope.id)
 
+        //vamos a capturar el navigation bar de los botones del horoscopo y decirle que por defecto empiece en el diario
+        navigatonBarDetalles=findViewById(R.id.navigationBarDetails)
+        navigatonBarDetalles.selectedItemId= R.id.menu_daily
 
-        findViewById<Button>(R.id.b).setOnClickListener {
-            finish()
+        navigatonBarDetalles.setOnItemSelectedListener {
+            when (it.itemId) {
+                R.id.menu_daily -> {
+                    getHoroscopeLuck("daily")
+                }
+                R.id.menu_weekly -> {
+                    getHoroscopeLuck("weekly")
+                }
+                R.id.menu_monthly -> {
+                    getHoroscopeLuck("monthly")
+                }
+            }
+
+            return@setOnItemSelectedListener true
         }
 
 
+
     }
+
+
 
     //esta funcion es propia al poner un activity bar(menu) y es necesaria para
     //mostrar ese actitvity bar (inflar se llama en lenguaje tecnico)
@@ -111,6 +143,52 @@ class DetailActivity : AppCompatActivity() {
             favoriteMenuItem.setIcon(R.drawable.ic_favorite_selected)
         } else {
             favoriteMenuItem.setIcon(R.drawable.ic_favorite)
+        }
+    }
+
+
+    fun getHoroscopeLuck(method: String) {
+
+        // Llamada en hilo secundario
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Declaramos la url
+                val url = URL("https://horoscope-app-api.vercel.app/api/v1/get-horoscope/$method?sign=${horoscope.id}&day=TODAY")
+                val con = url.openConnection() as HttpsURLConnection
+                con.requestMethod = "GET"
+                val responseCode = con.responseCode
+                Log.i("HTTP", "Response Code :: $responseCode")
+
+                // Preguntamos si hubo error o no
+                if (responseCode == HttpsURLConnection.HTTP_OK) { // Ha ido bien
+                    // Metemos el cuerpo de la respuesta en un BurfferedReader
+                    val bufferedReader = BufferedReader(InputStreamReader(con.inputStream))
+                    var inputLine: String?
+                    val response = StringBuffer()
+                    while (bufferedReader.readLine().also { inputLine = it } != null) {
+                        response.append(inputLine)
+                    }
+                    bufferedReader.close()
+
+                    // Parsear JSON
+                    val json = JSONObject(response.toString())
+                    val result =  json.getJSONObject("data").getString("horoscope_data")
+
+                    // Ejecutamos en el hilo principal
+                    /*CoroutineScope(Dispatchers.Main).launch {
+
+                    }*/
+                    runOnUiThread {
+                        dailyHoroscopeTextView.text = result
+
+                    }
+
+                } else { // Hubo un error
+                    Log.w("HTTP", "Response :: Hubo un error")
+                }
+            } catch (e: Exception) {
+                Log.e("HTTP", "Response Error :: ${e.stackTraceToString()}")
+            }
         }
     }
 }

@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
                 if (newText != null) {
                     horoscopeList = HoroscopeProvider.findAll().filter {
                         getString(it.name).contains(newText, true) ||
-                                getString(it.description).contains(newText, true)
+                                getString(it.dates).contains(newText, true)
                     }
                     adapter.updateData(horoscopeList, newText)
                 }
