@@ -13,7 +13,7 @@ import com.example.horoscopo.utils.SessionManager
 
 class HoroscopeAdapter(private var items: List<Horoscope>, val onItemClick: (Int) -> Unit): RecyclerView.Adapter<HoroscopeViewHolder>() {
 
-
+    private var highlightText: String? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HoroscopeViewHolder {
         val view: View = LayoutInflater.from(parent.context).inflate(R.layout.item_horoscope, parent, false)
@@ -32,13 +32,6 @@ class HoroscopeAdapter(private var items: List<Horoscope>, val onItemClick: (Int
             onItemClick(position)
         }
     }
-
-
-
-
-
-
-
 
 
 }
@@ -77,5 +70,28 @@ class HoroscopeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             favoriteImageView.visibility = View.GONE
         }
 
+    }
+
+    // Este método sirve para actualizar los datos
+    fun updateData (newDataSet: List<Horoscope>) {
+        updateData(newDataSet, null)
+    }
+
+    fun updateData(newDataSet: List<Horoscope>, highlight: String?) {
+        this.highlightText = highlight
+        dataSet = newDataSet
+        notifyDataSetChanged()
+    }
+
+    // Subraya el texto que coincide con la busqueda
+    fun highlight(text: String) {
+        try {
+            val highlighted = nameTextView.text.toString().highlight(text)
+            nameTextView.text = highlighted
+        } catch (e: Exception) { }
+        try {
+            val highlighted = descTextView.text.toString().highlight(text)
+            descTextView.text = highlighted
+        } catch (e: Exception) { }
     }
 }

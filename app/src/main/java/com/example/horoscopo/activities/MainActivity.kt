@@ -84,14 +84,20 @@ class MainActivity : AppCompatActivity() {
         // Configurar el SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                // Manejar la búsqueda al enviar la consulta
+                // Manejar la búsqueda al enviar la consulta es decir al dar al Enter(no haremos nada)
                 return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 // Manejar los cambios en el texto de búsqueda
 
-
+                if (newText != null) {
+                    horoscopeList = HoroscopeProvider.findAll().filter {
+                        getString(it.name).contains(newText, true) ||
+                                getString(it.description).contains(newText, true)
+                    }
+                    adapter.updateData(horoscopeList, newText)
+                }
                 return true
             }
         })
