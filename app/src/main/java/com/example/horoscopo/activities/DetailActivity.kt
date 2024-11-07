@@ -10,10 +10,13 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.horoscopo.R
 import com.example.horoscopo.data.Horoscope
 import com.example.horoscopo.data.HoroscopeProvider
+import com.example.horoscopo.utils.ApiControl
 import com.example.horoscopo.utils.SessionManager
 import com.google.android.material.navigation.NavigationBarView
 import kotlinx.coroutines.CoroutineScope
@@ -68,9 +71,9 @@ class DetailActivity : AppCompatActivity() {
         session = SessionManager(this)
         isFavorite = session.isFavorite(horoscope.id)
 
-        //vamos a capturar el navigation bar de los botones del horoscopo y decirle que por defecto empiece en el diario
         navigatonBarDetalles=findViewById(R.id.navigationBarDetails)
-        navigatonBarDetalles.selectedItemId= R.id.menu_daily
+
+
 
         navigatonBarDetalles.setOnItemSelectedListener {
             when (it.itemId) {
@@ -87,7 +90,9 @@ class DetailActivity : AppCompatActivity() {
 
             return@setOnItemSelectedListener true
         }
+        //vamos a capturar el navigation bar de los botones del horoscopo y decirle que por defecto empiece en el diario
 
+        navigatonBarDetalles.selectedItemId= R.id.menu_daily
 
 
     }
@@ -147,28 +152,23 @@ class DetailActivity : AppCompatActivity() {
     }
 
 
-    fun getHoroscopeLuck(method: String) {
+    private fun getHoroscopeLuck(method: String) {
 
         // Llamada en hilo secundario
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // Declaramos la url
+
                 val url = URL("https://horoscope-app-api.vercel.app/api/v1/get-horoscope/$method?sign=${horoscope.id}&day=TODAY")
-                val con = url.openConnection() as HttpsURLConnection
-                con.requestMethod = "GET"
-                val responseCode = con.responseCode
-                Log.i("HTTP", "Response Code :: $responseCode")
+                val apiControl=ApiControl()
+                val responseCode=apiControl.conexion_api(url,"GET")
 
                 // Preguntamos si hubo error o no
                 if (responseCode == HttpsURLConnection.HTTP_OK) { // Ha ido bien
                     // Metemos el cuerpo de la respuesta en un BurfferedReader
-                    val bufferedReader = BufferedReader(InputStreamReader(con.inputStream))
-                    var inputLine: String?
-                    val response = StringBuffer()
-                    while (bufferedReader.readLine().also { inputLine = it } != null) {
-                        response.append(inputLine)
-                    }
-                    bufferedReader.close()
+
+                   // val response= apiControl.leer_api()
+                    val response=apiControl.leer_api()
 
                     // Parsear JSON
                     val json = JSONObject(response.toString())
@@ -184,6 +184,7 @@ class DetailActivity : AppCompatActivity() {
                     }
 
                 } else { // Hubo un error
+                    print("NO HA ENTRADO EN LA CONEXION")
                     Log.w("HTTP", "Response :: Hubo un error")
                 }
             } catch (e: Exception) {
